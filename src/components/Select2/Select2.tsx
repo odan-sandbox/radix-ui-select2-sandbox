@@ -6,18 +6,20 @@ import {
   ChevronDownIcon,
   ChevronUpIcon,
 } from "@radix-ui/react-icons";
-import "./styles.css";
+// import "./styles.css";
+import "@acab/reset.css";
+import classes from "./styles.module.css";
 
 const Select2 = () => (
   <Select.Root>
-    <Select.Trigger className="SelectTrigger" aria-label="Food">
-      <Select.Value placeholder="Select a fruit…" />
+    <Select.Trigger className={classes.trigger}>
+      <Select.Value className={classes.value} placeholder="ショップ名" />
       <Select.Icon className="SelectIcon">
         <ChevronDownIcon />
       </Select.Icon>
     </Select.Trigger>
     <Select.Portal>
-      <Select.Content className="SelectContent">
+      <Select.Content className="SelectContent" position="popper">
         <Select.ScrollUpButton className="SelectScrollButton">
           <ChevronUpIcon />
         </Select.ScrollUpButton>
@@ -64,11 +66,7 @@ const Select2 = () => (
 
 const SelectItem = React.forwardRef<
   HTMLDivElement,
-  {
-    children: React.ReactNode;
-    className?: string;
-    value: string;
-  }
+  React.ComponentProps<typeof Select.Item>
 >(({ children, className, ...props }, forwardedRef) => {
   return (
     <Select.Item

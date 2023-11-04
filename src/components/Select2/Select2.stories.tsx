@@ -4,7 +4,11 @@ import { Select2 } from "./Select2";
 
 const meta = {
   title: "Select2",
-  component: Select2,
+  component: () => (
+    <div style={{ width: "400px" }}>
+      <Select2 />
+    </div>
+  ),
   parameters: {
     // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/react/configure/story-layout
     layout: "centered",
