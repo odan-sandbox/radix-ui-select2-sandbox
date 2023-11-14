@@ -1,9 +1,10 @@
-import { Fragment, SVGProps, useState } from "react";
-import { Combobox, Transition } from "@headlessui/react";
+import { SVGProps, useState } from "react";
+import { Combobox } from "@headlessui/react";
 import "../../index.css";
 // import styles from "./style.module.css";
 
 import { css } from "../../../styled-system/css";
+import classnames from "classnames";
 
 const styles = {
   inputAndButtonWrapper: css({
@@ -54,6 +55,9 @@ const styles = {
   option: css({
     padding: "4px 8px",
   }),
+  createItem: css({
+    cursor: "pointer",
+  }),
   activeOption: css({
     backgroundColor: "rgb(222, 235, 255)",
   }),
@@ -82,10 +86,44 @@ type Props = {
   options: Option[];
 };
 
+const Item = ({ option }: { option: Option }) => {
+  return (
+    <Combobox.Option
+      key={option.value}
+      className={({ active, selected }) =>
+        `${styles.option} ${active ? styles.activeOption : ""}${
+          selected ? styles.selectedOption : ""
+        }`
+      }
+      value={option}
+    >
+      <span>{option.label}</span>
+    </Combobox.Option>
+  );
+};
+
+const CreateItem = ({
+  query,
+  onClick,
+}: {
+  query: string;
+  onClick?: () => void;
+}) => {
+  return (
+    <Combobox.Option
+      className={classnames(styles.createItem, styles.option)}
+      value={{ value: query, label: query }}
+    >
+      <button onClick={onClick}>Create "{query}"</button>
+    </Combobox.Option>
+  );
+};
+
 // 表示するときに一瞬ガタつく
 export const HeadlessUISelect2 = ({ options }: Props) => {
   const [selected, setSelected] = useState<Option | undefined>();
   const [query, setQuery] = useState("");
+  const [focus, setFocus] = useState(false);
 
   const filteredOptions =
     query === ""
@@ -97,7 +135,10 @@ export const HeadlessUISelect2 = ({ options }: Props) => {
             .includes(query.toLowerCase().replace(/\s+/g, ""))
         );
 
-  console.log({ query, filteredOptions });
+  const showCreateItem = filteredOptions.length === 0 && query !== "";
+  const showItems = !showCreateItem || focus;
+
+  console.log({ query, filteredOptions, focus });
   return (
     <Combobox value={selected} onChange={setSelected}>
       <div className={styles.inputAndButtonWrapper}>
@@ -105,6 +146,8 @@ export const HeadlessUISelect2 = ({ options }: Props) => {
           className={styles.input}
           displayValue={(option: Option) => option.label}
           onChange={(event) => setQuery(event.target.value)}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
         />
         <div className={styles.separator} />
         <Combobox.Button className={styles.button}>
@@ -115,27 +158,11 @@ export const HeadlessUISelect2 = ({ options }: Props) => {
         </Combobox.Button>
       </div>
       <Combobox.Options className={styles.options}>
-        {filteredOptions.length === 0 && query !== "" ? (
-          <div className={`${styles.option}`}>Create "{query}"</div>
-        ) : (
+        {showCreateItem && <CreateItem query={query} />}
+        {showItems &&
           filteredOptions.map((option) => (
-            <Combobox.Option
-              key={option.value}
-              className={({ active, selected }) =>
-                `${styles.option} ${active ? styles.activeOption : ""}${
-                  selected ? styles.selectedOption : ""
-                }`
-              }
-              value={option}
-            >
-              {({ selected, active }) => (
-                <>
-                  <span className="">{option.label}</span>
-                </>
-              )}
-            </Combobox.Option>
-          ))
-        )}
+            <Item key={option.value} option={option} />
+          ))}
       </Combobox.Options>
     </Combobox>
   );
