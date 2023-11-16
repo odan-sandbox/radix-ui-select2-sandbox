@@ -95,6 +95,7 @@ const CreateButton = ({
 type Option = { label: string; value: string };
 export type Props = {
   labelText: string;
+  placeholder: string;
   options: Option[];
   onChange: (value: string) => void;
   onClickCreate: (value: string) => void;
@@ -102,6 +103,7 @@ export type Props = {
 
 export const ZagJsSelect2 = ({
   labelText,
+  placeholder,
   options,
   onChange,
   onClickCreate,
@@ -128,6 +130,7 @@ export const ZagJsSelect2 = ({
         onChange(value[0]);
       },
       openOnClick: true,
+      placeholder,
     }),
     {
       context: { collection },

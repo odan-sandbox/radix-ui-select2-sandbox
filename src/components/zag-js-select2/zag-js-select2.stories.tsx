@@ -32,6 +32,7 @@ const comboboxData = [
 export const Primary: Story = {
   args: {
     labelText: "Select country",
+    placeholder: "Select...",
     options: comboboxData,
     onChange: (value: string) => {
       console.log("onChange", value);
